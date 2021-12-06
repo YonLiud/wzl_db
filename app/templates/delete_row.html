@@ -1,0 +1,30 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container-fluid'>
+    <table>
+        <!-- for each column in columns create a header -->
+        <tr>
+            {% for column in columns %}
+                <th>{{ column[1] }}</th>
+            {% endfor %}
+        </tr>
+            <tr>
+                {% for column in columns %}
+                    <td>{{ rows[column] }}</td>
+                {% endfor %}
+            </tr>
+    </table>
+    <div class='row'>
+        <div class='col-md-12'>
+            <h1>Delete Row</h1>
+            <p>Are you sure you want to delete this row?</p>
+            <form action='/db/{{ table }}/{{ rows[columns[0][0]] }}/delete' method='post'>
+                <input type='hidden' name='id' value='{{ id }}'>
+                <input type='submit' value='Delete' class='btn btn-danger'>
+                <a href='/db/' class='btn btn-default'>Cancel</a>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head> 
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Remove Input Fields Dynamically with JQuery Ajax Python Flask and PostgreSQL</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />  
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>    
+</head>
+<body>
+ <script>
+$(document).ready(function() {
+  
+var MaxInputs       = 8; //maximum input boxes allowed
+var InputsWrapper   = $("#InputsWrapper"); //Input boxes wrapper ID
+var AddButton       = $("#AddMoreFileBox"); //Add button ID
+  
+var x = InputsWrapper.length; //initlal text box count
+var FieldCount=1; //to keep track of text box added
+  
+$(AddButton).click(function (e)  //on add input button click
+{
+    if(x <= MaxInputs) //max input box allowed
+    {
+        FieldCount++; //text box added increment
+        //add input box
+        $(InputsWrapper).append('<div class="row"><p class="col-xs-6"><input type="text" placeholder="Enter Column Title" class="form-control skill_list" name="column[]" id="field_'+ FieldCount +'" value="Enter Column Title '+ FieldCount +'"/></p><a href="#" class="btn btn-danger removeclass">×</a></div>');
+        x++; //text box increment
+    }
+    return false;
+});
+  
+$("body").on("click",".removeclass", function(e){ //user click on remove text
+    if( x > 1 ) {
+        $(this).parent('div').remove(); //remove text box
+         x--; //decrement textbox
+    }
+    return false;
+})
+
+ $('#submit').click(function(){            
+    $.ajax({  
+        url:"/db/add",  
+        method:"POST",  
+        data:$('#add_columns').serialize(),  
+        success:function(data)  
+        {  
+            alert("created Table with: " +data);
+            // redirect to home page
+            window.location.href = "/db/";  
+        }
+    });  
+}); 
+
+});
+</script>
+<style>
+.row {padding:10px;}
+</style>
+<div class="container"><br /> <br />  
+    <h2 align="center">Add Table</h2><div id="resultbox"></div>  
+    <div class="form-group">  
+        <form name="add_columns" id="add_columns">
+        <div class="row">
+            <p class="col-xs-6"><input type="text" placeholder="Enter Table Name" class="form-control" name="table" id="table" value="Enter Table Name"/></p>
+        <div id="InputsWrapper">
+            <div class="row">
+                <div class="col-xs-6"><input type="text" name="column[]" placeholder="Column Title" class="form-control name_list" /></div>
+                <div class="col-xs-6"><button type="button" name="add" id="AddMoreFileBox" class="btn btn-success">Add More</button></div>
+            </div>
+        </div>
+        <br/>
+        <input type="button" name="submit" id="submit" class="btn btn-info" value="Submit" />  
+        </form>  
+    </div>  
+</div>  
+</body>
+</html>
