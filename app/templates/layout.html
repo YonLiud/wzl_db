@@ -16,7 +16,15 @@
 <!-- Bring in Bootstrap CSS and theme CSS -->
 <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-theme.min.css') }}" rel="stylesheet">
-
+<style>
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+.inline-block {
+    display: inline-block;
+ }
+</style>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -28,7 +36,7 @@
 <body style="padding-top: 30px">
 <div id="container-fluid">
 
-    <!-- Navigation, header, etc -->
+    <!-- add an image to the side of the screen -->
 
     <! -- Jinja Template Block -->
     {% block content %}
@@ -40,7 +48,11 @@
     <!-- add footer with github link -->
     <footer class="footer">
         <div class="container">
-            <p>Developed for VitalRP by YonLiud<br />Prototype Version / <a href="https://github.com/YonLiud/wzl_db">github link</a></p>
+            <p>Developed for VitalRP by YonLiud</p>
+            <div class="col-md-12">
+                <p>Prototype Version / <a href="https://github.com/YonLiud/wzl_db">github link</a> / Code Name: Arasaka</p>
+                <img src="{{ url_for('static', filename='img/arasaka.png') }}" alt="wzl_logo" class="img-responsive center-block" style="max-width: 25%;">
+            </div>
         </div>
     </footer>
 
