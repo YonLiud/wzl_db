@@ -1,1 +1,1 @@
-"# Weazel MDC" 
+# Weazel MDC
