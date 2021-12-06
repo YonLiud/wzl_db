@@ -2,16 +2,27 @@
 {% block content %}
 <div class='container-fluid'>
     <h1>Select a table</h1>
+    <!-- add button to make new tables -->
+    <a href='/db/add' class='btn btn-primary'>Create Table</a>
     {% if not tables %}
         <p>No tables in database</p>
     {% else %}
-    {% for table in tables %}
-        <div class='row'>
-            <div class='col-md-12'>
-                <a href='/db/{{ table[0] }}'>{{ table[0] }}</a>
-            </div>
-        </div>
-    {% endfor %}
+    <table class='table table-striped'>
+        <thead>
+            <tr>
+                <th>Table</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for table in tables %}
+                <tr>
+                    <td><a href='/db/{{ table[0] }}'>{{ table[0] }}</a></td>
+                    <td><a href='/db/{{ table[0] }}/delete' class='btn btn-danger'>Delete</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
     {% endif %}
     

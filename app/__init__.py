@@ -46,6 +46,14 @@ def table_browser(table):
     
     return render_template('table_browser.html', table=table, columns=columns, rows=rows)
 
+@app.route('/db/<table>/delete', methods=['GET', 'POST'])
+def delete_table(table):
+    if request.method == 'POST':
+        execute_query('DROP TABLE {}'.format(table))
+        flash('Table {} deleted successfully!'.format(table))
+        return redirect(url_for('db_browser'))
+    return render_template('delete_table.html', table=table)
+
 @app.route('/db/add', methods=['GET', 'POST'])
 def add_table():
     if request.method == 'GET':

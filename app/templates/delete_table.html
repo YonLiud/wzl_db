@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container-fluid'>
+    <form action="/db/{{table}}/delete" method="post">
+        <h1>Are you sure you want to delete >{{ table }}< </h1>
+        <!-- add 2 buttons, one to submit and one to go back -->
+        <input type="submit" value="Delete" class="btn btn-danger">
+        <a href="/db/" class="btn btn-primary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
