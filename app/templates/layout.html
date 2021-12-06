@@ -10,7 +10,7 @@
 {% if title %}
 <title>{{ title }}</title>
 {% else %}
-<title>Title</title>
+<title>wzl_db</title>
 {% endif %}
 
 <!-- Bring in Bootstrap CSS and theme CSS -->
@@ -25,7 +25,7 @@
                 <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
                 <![endif]-->
 </head>
-<body style="padding-top: 50px">
+<body style="padding-top: 30px">
 <div id="container-fluid">
 
     <!-- Navigation, header, etc -->
@@ -34,6 +34,15 @@
     {% block content %}
     {% endblock %}
 
+
+</div>
+<div id="container-fluid">
+    <!-- add footer with github link -->
+    <footer class="footer">
+        <div class="container">
+            <p>Developed for VitalRP by YonLiud<br />Prototype Version</p>
+        </div>
+    </footer>
 
 </div>
 

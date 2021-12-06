@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class='container-fluid'>
+    <h1>Select a table</h1>
+    {% if not tables %}
+        <p>No tables in database</p>
+    {% else %}
+    {% for table in tables %}
+        <div class='row'>
+            <div class='col-md-12'>
+                <a href='/db/{{ table[0] }}'>{{ table[0] }}</a>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% endif %}
+    
+</div>
+{% endblock %}
