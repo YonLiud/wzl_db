@@ -60,14 +60,21 @@ def add_table():
         return render_template('add_table.html')
     else:
         table = request.form.get('table')
-        skills = request.form.getlist('column[]')
+        columns = request.form.getlist('column[]')
+        columns = [column.replace(' ', '_') for column in columns]        
+        if not table or not columns:
+            return "Please fill all of the fields"
         query = """CREATE TABLE {} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             {}
             )
-        """.format(table, ' TEXT, '.join(skills))
-        execute_query(query)
-        return redirect(url_for('db_browser'))
+        """.format(table, ' TEXT, '.join(columns))
+        try:
+            execute_query(query)
+            return('Table {} created successfully!'.format(table))
+        except Exception as e:
+            return(str(e))
+        
 
 @app.route('/db/<table>/add', methods=['GET', 'POST'])
 def add_row(table):

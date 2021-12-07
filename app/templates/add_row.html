@@ -3,7 +3,6 @@
 <div class='container-fluid'>
     <form action='/db/{{table}}/add' method='post'>
         <div class='form-group'>
-            <!-- text box for each column in columns except column id -->
             {% for column in columns %}
                 {% if column[1] != 'id' %}
                     <div class='form-group'>
