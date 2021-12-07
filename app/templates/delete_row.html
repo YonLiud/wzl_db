@@ -1,22 +1,29 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class='container-fluid'>
-    <table>
-        <!-- for each column in columns create a header -->
-        <tr>
-            {% for column in columns %}
-                <th>{{ column[1] }}</th>
-            {% endfor %}
-        </tr>
-            <tr>
-                {% for column in columns %}
-                    <td>{{ rows[column] }}</td>
-                {% endfor %}
-            </tr>
-    </table>
     <div class='row'>
         <div class='col-md-12'>
+            
             <h1>Delete Row</h1>
+
+            <table class="table table-stripped">
+                <thead>
+                    <tr>
+                        {% for column in columns %}
+                            <th>{{column[1]}}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for column in columns %}
+                            <td>{{rows[column[0]]}}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+
+
+            </table>
             <p>Are you sure you want to delete this row?</p>
             <form action='/db/{{ table }}/{{ rows[columns[0][0]] }}/delete' method='post'>
                 <input type='hidden' name='id' value='{{ id }}'>

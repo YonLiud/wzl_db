@@ -45,8 +45,6 @@ def table_browser(table):
     
     columns = execute_query('PRAGMA table_info({})'.format(table))
     rows = execute_query('SELECT * FROM {}'.format(table))
-    
-    # make all values in rows strings
     rows = [[str(x) for x in row] for row in rows]
 
 
@@ -73,12 +71,12 @@ def add_table():
             return "Please fill all of the fields"
         query = """CREATE TABLE {} (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            {}
+            {} TEXT
             )
-        """.format(table, ' TEXT, '.join(columns))
+        """.format(table, ' TEXT, '.join(columns), columns[0])
         try:
             execute_query(query)
-            return('Table {} created successfully!'.format(table))
+            return('success'.format(table))
         except Exception as e:
             return(str(e))
         
@@ -142,13 +140,22 @@ def edit_row(table, row_id):
     columns = columns[1:]
     return render_template('edit_row.html', table=table, row_id=row_id, columns=columns, data=data[0])
 
+@app.route('/db/kill')
+def kill_server():
+    
+    os.remove('database.db')
+    os.system('kill -9 {}'.format(os.getpid()))
+
 @app.route('/db/<table>/search/', methods=['POST'])
 def search_table(table):
     if request.method == 'POST':
         columns = execute_query('PRAGMA table_info({})'.format(table))
         columns_name = [x[1] for x in columns]
         args = request.form.get('args')
-        # select all rows that contain the like args
-        query = """SELECT * FROM {} WHERE {}""".format(table, ' OR '.join(['{} LIKE "%{}%"'.format(x, y) for x, y in zip(columns_name, args)]))
+        if args.isdigit():
+            query = """SELECT * FROM {} WHERE {}={}""".format(table, columns_name[0], args)
+        else:
+            query = """SELECT * FROM {} WHERE {} LIKE '%{}%'""".format(table, columns_name[1], args)
         rows = execute_query(query)
-        return render_template('table_browser.html', table=table, rows=rows, columns=columns)
+        rows = [[str(x) for x in row] for row in rows]
+        return render_template('table_browser.html', table=table, columns=execute_query('PRAGMA table_info({})'.format(table)), rows=rows)
