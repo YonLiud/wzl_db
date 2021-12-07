@@ -14,6 +14,9 @@ app.config.from_object('config')
 def execute_query(query):
     conn = sqlite3.connect('database.db')
     cursor = conn.cursor()
+    # remove potential for sql injection
+    
+    
     cursor.execute(query)
     callback = cursor.fetchall()
     conn.commit()
@@ -43,6 +46,10 @@ def table_browser(table):
     columns = execute_query('PRAGMA table_info({})'.format(table))
     rows = execute_query('SELECT * FROM {}'.format(table))
     
+    # make all values in rows strings
+    rows = [[str(x) for x in row] for row in rows]
+
+
     return render_template('table_browser.html', table=table, columns=columns, rows=rows)
 
 @app.route('/db/<table>/delete', methods=['GET', 'POST'])
@@ -59,8 +66,9 @@ def add_table():
         return render_template('add_table.html')
     else:
         table = request.form.get('table')
-        columns = request.form.getlist('column[]')
-        columns = [column.replace(' ', '_') for column in columns]        
+        columns = request.form.getlist('column[]')    
+        columns = [column.replace(' ', '_') for column in columns]
+        table = table.replace(' ', '_')
         if not table or not columns:
             return "Please fill all of the fields"
         query = """CREATE TABLE {} (
@@ -85,7 +93,10 @@ def add_row(table):
         values = [request.form[x] for x in request.form]
         values = ['"{}"'.format(x) for x in values]
         values = ', '.join(values)
-        query = 'INSERT INTO {} ({}) VALUES ({})'.format(table, columns, values)
+        # remove '' from values
+        values = values.replace("'", "")
+        
+        query = """INSERT INTO {} ({}) VALUES ({})""".format(table, columns, values)
         execute_query(query)
         flash('Row added to {}'.format(table))
         return redirect(url_for('table_browser', table=table))
@@ -95,7 +106,7 @@ def add_row(table):
 @app.route('/db/<table>/<row_id>/delete', methods=['GET', 'POST'])
 def delete_row(table, row_id):
     if request.method == 'POST':
-        query = 'DELETE FROM {} WHERE id={}'.format(table, row_id)
+        query = """DELETE FROM {} WHERE id={}""".format(table, row_id)
         execute_query(query)
         flash('Row deleted from {}'.format(table))
         return redirect(url_for('table_browser', table=table))
@@ -117,8 +128,10 @@ def edit_row(table, row_id):
         values = [x + '=' + y for x, y in zip(columns.split(', '), values)]
         # make values a string
         values = ', '.join(values)
+        # remove '' from values
+        values = values.replace("'", "")
         
-        query = 'UPDATE {} SET {} WHERE id={}'.format(table, values, row_id)
+        query = """UPDATE {} SET {} WHERE id={}""".format(table, values, row_id)
         
 
         execute_query(query)
@@ -129,9 +142,13 @@ def edit_row(table, row_id):
     columns = columns[1:]
     return render_template('edit_row.html', table=table, row_id=row_id, columns=columns, data=data[0])
 
-@app.route('/db/<table>/search/<column>', methods=['POST'])
-def search_table(table, column):
+@app.route('/db/<table>/search/', methods=['POST'])
+def search_table(table):
     if request.method == 'POST':
-        query = 'SELECT * FROM {} WHERE {} LIKE "%{}%"'.format(table, column, request.form['search'])
+        columns = execute_query('PRAGMA table_info({})'.format(table))
+        columns_name = [x[1] for x in columns]
+        args = request.form.get('args')
+        # select all rows that contain the like args
+        query = """SELECT * FROM {} WHERE {}""".format(table, ' OR '.join(['{} LIKE "%{}%"'.format(x, y) for x, y in zip(columns_name, args)]))
         rows = execute_query(query)
-        return render_template('table_browser.html', table=table, rows=rows)
+        return render_template('table_browser.html', table=table, rows=rows, columns=columns)

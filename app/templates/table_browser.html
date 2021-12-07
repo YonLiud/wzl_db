@@ -5,9 +5,9 @@
     <a class="btn btn-primary" href='/db/'>Return Back</a>
     <a class="btn btn-primary" href='/db/{{table}}/add'>Add row</a>
     <br />
-    <form action='/db/{{table}}/search' method='post'>
+    <form action='/db/{{table}}/search/' method='post'>
         
-        <input class="form-control"  type='text' name='search' placeholder='Search'/>
+        <input class="form-control"  type='text' name='args' id="args" placeholder='Search'/>
         <input type='submit' class="btn btn-secondary" value='Search'/>
     </div>
     </form>
@@ -30,7 +30,14 @@
                 {% for row in rows %}
                     <tr>
                         {% for column in columns %}
-                            <td>{{ row[column[0]] }}</td>
+                            <!-- if row has http or https, it's a link -->
+                            {% if 'https' in row[column[0]] %}
+                                <td><a href='{{ row[column[0]] }}'>{{ row[column[0]] }}</a></td>
+                            {% elif 'http' in row[column[0]] %}
+                                <td><a href='{{ row[column[0]] }}'>{{ row[column[0]] }}</a></td>
+                            {% else %}
+                                <td>{{ row[column[0]] }}</td>
+                            {% endif %}
                         {% endfor %}
                             
                             <td><a class="btn btn-danger" href='/db/{{ table }}/{{ row[columns[0][0]] }}/delete'>Delete</a></td>
