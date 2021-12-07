@@ -21,7 +21,7 @@
             <form action='/db/{{ table }}/{{ rows[columns[0][0]] }}/delete' method='post'>
                 <input type='hidden' name='id' value='{{ id }}'>
                 <input type='submit' value='Delete' class='btn btn-danger'>
-                <a href='/db/' class='btn btn-default'>Cancel</a>
+                <a href='/db/{{table}}/' class='btn btn-default'>Cancel</a>
             </form>
         </div>
     </div>

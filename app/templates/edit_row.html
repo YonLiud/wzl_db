@@ -1,6 +1,25 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class='container-fluid'>
-    <p> Edit </p>
+    <form action="/db/{{table}}/{{row_id}}/edit" method="post">
+        <table class='table table-bordered'>
+            <thead>
+                <tr>
+                    <th>Column</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for column in columns %}
+                <tr>
+                    <td>{{column[1]}}</td>
+                    <td><input type='text' name='column[]' value='{{data[column[0]]}}' /></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <input type='submit' value='Save' class='btn btn-primary' />
+        <a href='/db/{{table}}' class='btn btn-default'>Cancel</a>
+    </form>
 </div>
 {% endblock %}

@@ -111,12 +111,22 @@ def edit_row(table, row_id):
         columns = [x[1] for x in columns]
         columns.remove('id')
         columns = ', '.join(columns)
-        values = [request.form[x] for x in request.form]
+        values = request.form.getlist('column[]')
+        # add "" for each value in values
         values = ['"{}"'.format(x) for x in values]
+        # add column names to values: column1="value1", column2="value2"
+        values = [x + '=' + y for x, y in zip(columns.split(', '), values)]
+        # make values a string
         values = ', '.join(values)
+        
         query = 'UPDATE {} SET {} WHERE id={}'.format(table, values, row_id)
+        
+        # return query
+        
         execute_query(query)
         flash('Row updated in {}'.format(table))
         return redirect(url_for('table_browser', table=table))
     columns = execute_query('PRAGMA table_info({})'.format(table))
-    return render_template('edit_row.html', table=table, row_id=row_id, columns=columns)
+    data = execute_query('SELECT * FROM {} WHERE id={}'.format(table, row_id))
+    columns = columns[1:]
+    return render_template('edit_row.html', table=table, row_id=row_id, columns=columns, data=data[0])

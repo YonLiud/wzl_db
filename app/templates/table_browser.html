@@ -2,8 +2,8 @@
 {% block content %}
 <div class='container-fluid'>
     <h1>{{ table }}</h1>
-    <a href='/db/'>Return Back</a>
-    <a href='/db/{{table}}/add'>Add row</a>
+    <a class="btn btn-primary" href='/db/'>Return Back</a>
+    <a class="btn btn-primary" href='/db/{{table}}/add'>Add row</a>
     
     <!-- if columns is none -->
     {% if columns is none %}
@@ -26,8 +26,8 @@
                             <td>{{ row[column[0]] }}</td>
                         {% endfor %}
                             
-                            <td><a href='/db/{{ table }}/{{ row[columns[0][0]] }}/delete'>Delete</a></td>
-                            <td><a href='/db/{{ table }}/{{ row[columns[0][0]] }}/edit'>Edit</a></td>
+                            <td><a class="btn btn-danger" href='/db/{{ table }}/{{ row[columns[0][0]] }}/delete'>Delete</a></td>
+                            <td><a class="btn btn-primary" href='/db/{{ table }}/{{ row[columns[0][0]] }}/edit'>Edit</a></td>
                     </tr>
                 {% endfor %}
             </tbody>
