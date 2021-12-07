@@ -1,6 +1,7 @@
 # Import flask and template operators
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 import sqlite3
+import os
 
 # Define WSGI object
 app = Flask(__name__)
@@ -25,16 +26,14 @@ def execute_query(query):
 def not_found(error):
     return render_template('404.html'), 404
 
-# Home page view
+
 @app.route('/')
 def home():
     return render_template('home.html')
 
 @app.route('/db/')
 def db_browser():
-    # Get all the tables
     tables = execute_query('SELECT name FROM sqlite_master WHERE type="table"')
-    # remove table called sqlite_sequence from the list
     tables.remove(('sqlite_sequence',))
     return render_template('db_browser.html', tables=tables)
 
@@ -121,8 +120,7 @@ def edit_row(table, row_id):
         
         query = 'UPDATE {} SET {} WHERE id={}'.format(table, values, row_id)
         
-        # return query
-        
+
         execute_query(query)
         flash('Row updated in {}'.format(table))
         return redirect(url_for('table_browser', table=table))
@@ -130,3 +128,10 @@ def edit_row(table, row_id):
     data = execute_query('SELECT * FROM {} WHERE id={}'.format(table, row_id))
     columns = columns[1:]
     return render_template('edit_row.html', table=table, row_id=row_id, columns=columns, data=data[0])
+
+@app.route('/db/<table>/search/<column>', methods=['POST'])
+def search_table(table, column):
+    if request.method == 'POST':
+        query = 'SELECT * FROM {} WHERE {} LIKE "%{}%"'.format(table, column, request.form['search'])
+        rows = execute_query(query)
+        return render_template('table_browser.html', table=table, rows=rows)

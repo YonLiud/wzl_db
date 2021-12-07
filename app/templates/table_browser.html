@@ -4,8 +4,15 @@
     <h1>{{ table }}</h1>
     <a class="btn btn-primary" href='/db/'>Return Back</a>
     <a class="btn btn-primary" href='/db/{{table}}/add'>Add row</a>
-    
-    <!-- if columns is none -->
+    <br />
+    <form action='/db/{{table}}/search' method='post'>
+        
+        <input class="form-control"  type='text' name='search' placeholder='Search'/>
+        <input type='submit' class="btn btn-secondary" value='Search'/>
+    </div>
+    </form>
+
+
     {% if columns is none %}
         <p>No columns in this table</p>
     {% else %}
